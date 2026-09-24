@@ -1,68 +1,55 @@
 # Decisiones de diseño — Semana 3
 
-## 1. Punto de entrada
+## Búsqueda binaria por timestamp
 
-El proyecto mantiene un único punto de entrada:
+### Precondición
 
-```text
-IngestaSensores.main()
-```
+La búsqueda binaria requiere que las lecturas estén ordenadas ascendentemente por timestamp.
 
-No se crean aplicaciones independientes por semana.
+### Condición actual del proyecto
 
-`BancoDePruebas` es una clase auxiliar y no contiene `main`.
+GeneradorDatos produce timestamps en orden cronológico ascendente.
 
-## 2. Búsqueda por timestamp
+### Decisión
 
-Se utilizan dos estrategias:
+Utilizar búsqueda binaria para consultas por timestamp.
 
-- Búsqueda lineal: no requiere ordenamiento.
-- Búsqueda binaria: requiere que el arreglo esté ordenado por timestamp.
+### Justificación
 
-Los datos sintéticos de `GeneradorDatos` se generan en orden cronológico, por lo que la búsqueda binaria por timestamp cumple su precondición.
+La búsqueda binaria reduce significativamente la cantidad de comparaciones necesarias para encontrar una lectura.
 
-## 3. Búsqueda por PM2.5
+Mientras la búsqueda lineal tiene complejidad O(n), la búsqueda binaria tiene complejidad O(log n).
 
-No se asume que los datos estén ordenados por PM2.5.
+Los resultados experimentales obtenidos fueron:
 
-Por tanto, la búsqueda binaria por PM2.5 se conserva como experimento para demostrar el efecto de una precondición incumplida.
+- 1.000 lecturas → 10 comparaciones
+- 100.000 lecturas → 17 comparaciones
+- 1.000.000 lecturas → 20 comparaciones
 
-## 4. Comparación de String
+Esto demuestra que la búsqueda binaria es más eficiente cuando se cumple la precondición de ordenamiento.
 
-Los identificadores de estación se comparan mediante:
+## PM2.5
 
-```java
-equals()
-```
+No se utilizará búsqueda binaria directamente sobre PM2.5 mientras los datos no estén ordenados por dicho campo.
 
-y no mediante:
+El experimento realizado mostró que la búsqueda binaria encontró 0 de 20 valores existentes.
 
-```java
-==
-```
+Esto demuestra que un algoritmo correcto puede producir resultados incorrectos si no se cumplen sus precondiciones.
 
-porque se necesita comparar contenido.
+## Comparación de String
 
-## 5. Medición
+Los timestamps y los identificadores de estación se comparan mediante equals() y no mediante ==.
 
-La comparación principal entre algoritmos utiliza el número de comparaciones.
+equals() compara el contenido de las cadenas, mientras que == compara referencias en memoria.
 
-El tiempo en milisegundos se conserva como evidencia experimental, pero no es la única medida utilizada.
+## Medición de eficiencia
 
-## 6. Evolución del proyecto
+La principal medida utilizada fue el número de comparaciones realizadas por cada algoritmo.
 
-La Semana 3 agrega una nueva capacidad a la misma plataforma:
+También se registró el tiempo de ejecución como evidencia experimental complementaria.
 
-```text
-Sensores
-   ↓
-Ingesta
-   ↓
-Repositorio
-   ↓
-Búsqueda
-   ↓
-Medición de eficiencia
-```
+## Pregunta pendiente
 
-La Semana 4 podrá extender esta misma arquitectura para estudiar ordenamiento.
+¿Conviene ordenar los datos antes de realizar las búsquedas?
+
+Esta pregunta será abordada durante la Semana 4, cuando se estudien algoritmos de ordenamiento.
