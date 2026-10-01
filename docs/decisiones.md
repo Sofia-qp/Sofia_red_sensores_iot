@@ -53,3 +53,81 @@ También se registró el tiempo de ejecución como evidencia experimental comple
 ¿Conviene ordenar los datos antes de realizar las búsquedas?
 
 Esta pregunta será abordada durante la Semana 4, cuando se estudien algoritmos de ordenamiento.
+
+# DEC-04 — Pivote de QuickSort
+
+**Semana:** 4
+
+**Problema:**
+
+QuickSort con pivote fijo puede producir particiones muy desbalanceadas cuando los datos ya están ordenados cronológicamente.
+
+**Alternativas:**
+
+- Pivote aleatorio.
+- Mediana de tres.
+
+**Decisión:**
+
+Utilizar pivote aleatorio.
+
+**Justificación:**
+
+Después de modificar el algoritmo, QuickSort funcionó correctamente tanto con 50.000 lecturas desordenadas como con 50.000 lecturas ordenadas cronológicamente.
+
+Resultados obtenidos:
+
+- Datos desordenados:
+    - Comparaciones: 993.477
+    - Intercambios: 594.968
+
+- Datos ordenados:
+    - Comparaciones: 920.810
+    - Intercambios: 501.692
+
+No se produjo StackOverflowError.
+
+**Consecuencia:**
+
+El algoritmo mantiene un comportamiento estable incluso cuando las lecturas llegan ordenadas desde la red de sensores.
+
+---
+
+# DEC-05 — Ordenamiento y búsqueda
+
+**Semana:** 4
+
+**Problema:**
+
+Ordenar las lecturas por PM2.5 destruye el orden por timestamp que necesita la búsqueda binaria.
+
+**Alternativas:**
+
+- Trabajar con una copia.
+- Restaurar el orden original después del ranking.
+- Mantener índices separados.
+
+**Decisión:**
+
+Conservar el orden por timestamp para las consultas y utilizar una copia cuando sea necesario generar rankings por PM2.5.
+
+**Justificación:**
+
+En el Experimento 5 se observó que:
+
+Antes de ordenar:
+
+- Ordenado por timestamp: true
+- Búsqueda binaria: posición 73412
+
+Después de ordenar por PM2.5:
+
+- Ordenado por timestamp: false
+- Búsqueda binaria: posición -1
+- Búsqueda lineal: posición 87753
+
+La lectura seguía existiendo, pero la búsqueda binaria dejó de funcionar porque perdió su precondición.
+
+**Consecuencia:**
+
+Se evita romper las consultas binarias por timestamp al generar reportes ordenados por PM2.5.
